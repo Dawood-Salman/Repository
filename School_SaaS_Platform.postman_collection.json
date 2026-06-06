@@ -1,0 +1,1763 @@
+{
+  "info": {
+    "name": "School SaaS Platform API",
+    "description": "Multi-tenant school management system API collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:4000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register Platform User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Platform Admin\",\n  \"email\": \"admin@platform.com\",\n  \"password\": \"password123\",\n  \"roles\": [\"platform_user\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Platform Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('token', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@platform.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Tenant Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('token', response.token);",
+                  "}",
+                  ""
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@abc.com\",\n  \"password\": \"password123\",\n  \"tenantCode\": \"EIMS-25-1\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"password123\",\n  \"newPassword\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/change-password",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "change-password"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Platform Management",
+      "item": [
+        {
+          "name": "Register Platform User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Platform Admin\",\n  \"email\": \"admin@platform.com\",\n  \"password\": \"password123\",\n  \"roles\": [\"platform_user\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/platform/register-platform",
+              "host": ["{{base_url}}"],
+              "path": ["platform", "register-platform"]
+            }
+          }
+        },
+        {
+          "name": "Create Tenant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"ABC School\",\n  \"email\": \"school@abc.com\",\n  \"phone\": \"1234567890\",\n  \"category\": \"school\",\n  \"address\": \"123 School St\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/platform/tenants",
+              "host": ["{{base_url}}"],
+              "path": ["platform", "tenants"]
+            }
+          }
+        },
+        {
+          "name": "Get All Tenants",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/platform/tenants",
+              "host": ["{{base_url}}"],
+              "path": ["platform", "tenants"]
+            }
+          }
+        },
+        {
+          "name": "Create Super Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenantId\": \"TENANT_ID_HERE\",\n  \"name\": \"Super Admin\",\n  \"email\": \"superadmin@abc.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/platform/super-admin",
+              "host": ["{{base_url}}"],
+              "path": ["platform", "super-admin"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "School Management",
+      "item": [
+        {
+          "name": "Categories",
+          "item": [
+            {
+              "name": "Create Category",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Primary\",\n  \"description\": \"Grades 1-5\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/schools/categories",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "categories"]
+                }
+              }
+            },
+            {
+              "name": "Get Categories",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/schools/categories",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "categories"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Classes",
+          "item": [
+            {
+              "name": "Create Class",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Grade 1\",\n  \"numericLevel\": 1,\n  \"category\": \"CATEGORY_ID_HERE\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/schools/classes",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "classes"]
+                }
+              }
+            },
+            {
+              "name": "Get Classes",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/schools/classes",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "classes"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sections",
+          "item": [
+            {
+              "name": "Create Section",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"A\",\n  \"classId\": \"CLASS_ID_HERE\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/schools/sections",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "sections"]
+                }
+              }
+            },
+            {
+              "name": "Get Sections",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/schools/sections",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "sections"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admins",
+          "item": [
+            {
+              "name": "Create Admin",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"School Admin\",\n  \"email\": \"admin@abc.com\",\n  \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/schools/admins",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "admins"]
+                }
+              }
+            },
+            {
+              "name": "Get Admins",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/schools/admins",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "admins"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Students",
+          "item": [
+            {
+              "name": "Admit Student",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@abc.com\",\n  \"rollNo\": \"S001\",\n  \"classId\": \"CLASS_ID_HERE\",\n  \"sectionId\": \"SECTION_ID_HERE\",\n  \"categoryId\": \"CATEGORY_ID_HERE\",\n  \"guardian\": {\n    \"name\": \"Jane Doe\",\n    \"phone\": \"1234567890\",\n    \"relation\": \"Mother\"\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/schools/students/admit",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "students", "admit"]
+                }
+              }
+            },
+            {
+              "name": "Bulk Upload Students",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "csvFile",
+                      "type": "file",
+                      "src": ["sample_students.csv"]
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/schools/students/bulk-upload",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "students", "bulk-upload"]
+                }
+              }
+            },
+            {
+              "name": "Get Students",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/schools/students?page=1&limit=10&status=active",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "students"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Announcements",
+          "item": [
+            {
+              "name": "Create Announcement",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Exam schedule updated\",\n  \"message\": \"Mid-term exams will start from 10th March.\",\n  \"targetRoles\": [\"student\", \"teacher\"],\n  \"targetUserIds\": [],\n  \"startsAt\": \"2025-03-01T00:00:00.000Z\",\n  \"expiresAt\": \"2025-03-15T23:59:59.000Z\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/schools/announcements",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "announcements"]
+                }
+              }
+            },
+            {
+              "name": "Get All Announcements",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/schools/announcements",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "announcements"]
+                }
+              }
+            },
+            {
+              "name": "Get My Announcements",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/schools/announcements/my",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "announcements", "my"]
+                }
+              }
+            },
+            {
+              "name": "Mark Announcement Read",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/schools/announcements/{{announcementId}}/read",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "announcements", "{{announcementId}}", "read"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Teachers",
+          "item": [
+            {
+              "name": "Add Teacher",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Mr. Smith\",\n  \"email\": \"smith@abc.com\",\n  \"subject\": \"Mathematics\",\n  \"salary\": 50000\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/schools/teachers/add",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "teachers", "add"]
+                }
+              }
+            },
+            {
+              "name": "Bulk Upload Teachers",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "csvFile",
+                      "type": "file",
+                      "src": ["sample_teachers.csv"]
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/schools/teachers/bulk-upload",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "teachers", "bulk-upload"]
+                }
+              }
+            },
+            {
+              "name": "Get Teachers",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/schools/teachers",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "teachers"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Administrators",
+          "item": [
+            {
+              "name": "Add Administrator",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Admissions Officer\",\n  \"email\": \"admissions@abc.com\",\n  \"phone\": \"1234567890\",\n  \"department\": \"Admissions\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/schools/administrators",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "administrators"]
+                }
+              }
+            },
+            {
+              "name": "Get Administrators",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/schools/administrators",
+                  "host": ["{{base_url}}"],
+                  "path": ["schools", "administrators"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Finance",
+          "item": [
+            {
+              "name": "Fees",
+              "item": [
+                {
+                  "name": "Create Fee Invoice",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"studentId\": \"STUDENT_ID_HERE\",\n  \"classId\": \"CLASS_ID_HERE\",\n  \"sectionId\": \"SECTION_ID_HERE\",\n  \"session\": \"2025-2026\",\n  \"dueDate\": \"2025-04-15\",\n  \"items\": [\n    {\n      \"type\": \"Monthly Fee\",\n      \"amount\": 5000,\n      \"discounts\": [{ \"name\": \"Sibling Discount\", \"percentage\": 10 }],\n      \"scholarships\": []\n    }\n  ]\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/schools/fees",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "fees"]
+                    }
+                  }
+                },
+                {
+                  "name": "Get Fees",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/fees?status=pending",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "fees"],
+                      "query": [
+                        {
+                          "key": "status",
+                          "value": "pending"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Record Fee Payment",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"method\": \"online\",\n  \"transactionId\": \"TXN12345\",\n  \"amount\": 2500,\n  \"paidOn\": \"2025-04-10\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/schools/fees/{{feeId}}/payments",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "fees", "{{feeId}}", "payments"]
+                    }
+                  }
+                },
+                {
+                  "name": "Get Student Fee Summary",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/fees/student/{{studentId}}/summary",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "fees", "student", "{{studentId}}", "summary"]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Expenses",
+              "item": [
+                {
+                  "name": "Submit Expense",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"title\": \"Sports Day Supplies\",\n  \"category\": \"events\",\n  \"amount\": 15000,\n  \"expenseDate\": \"2025-04-05\",\n  \"vendor\": \"VENDOR_ID_HERE\",\n  \"department\": \"Sports\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/schools/expenses",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "expenses"]
+                    }
+                  }
+                },
+                {
+                  "name": "Get Expenses",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/expenses?category=events",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "expenses"],
+                      "query": [
+                        {
+                          "key": "category",
+                          "value": "events"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Get Expense Summary",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/expenses/summary?from=2025-04-01&to=2025-04-30",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "expenses", "summary"],
+                      "query": [
+                        {
+                          "key": "from",
+                          "value": "2025-04-01"
+                        },
+                        {
+                          "key": "to",
+                          "value": "2025-04-30"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Approve Expense",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"remarks\": \"Approved by finance\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/schools/expenses/{{expenseId}}/approve",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "expenses", "{{expenseId}}", "approve"]
+                    }
+                  }
+                },
+                {
+                  "name": "Reject Expense",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"remarks\": \"Insufficient documentation\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/schools/expenses/{{expenseId}}/reject",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "expenses", "{{expenseId}}", "reject"]
+                    }
+                  }
+                },
+                {
+                  "name": "Mark Expense Paid",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"method\": \"bank\",\n  \"reference\": \"BANK-REF-001\",\n  \"paidOn\": \"2025-04-12\",\n  \"amount\": 15000\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/schools/expenses/{{expenseId}}/pay",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "expenses", "{{expenseId}}", "pay"]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Vendors",
+              "item": [
+                {
+                  "name": "Add Vendor",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"name\": \"ABC Stationers\",\n  \"contactPerson\": \"John Smith\",\n  \"email\": \"contact@abcstationers.com\",\n  \"phone\": \"1234567890\",\n  \"category\": \"supplies\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/schools/vendors",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "vendors"]
+                    }
+                  }
+                },
+                {
+                  "name": "Get Vendors",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/vendors?category=supplies",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "vendors"],
+                      "query": [
+                        {
+                          "key": "category",
+                          "value": "supplies"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Accounting",
+              "item": [
+                {
+                  "name": "Create Account",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"code\": \"1010\",\n  \"name\": \"Cash in Bank\",\n  \"type\": \"asset\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/schools/accounting/accounts",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "accounting", "accounts"]
+                    }
+                  }
+                },
+                {
+                  "name": "Get Accounts",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/accounting/accounts",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "accounting", "accounts"]
+                    }
+                  }
+                },
+                {
+                  "name": "Create Journal Entry",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"entryNumber\": \"JE-1001\",\n  \"entryDate\": \"2025-04-10\",\n  \"narration\": \"Fee collection\",\n  \"lines\": [\n    { \"account\": \"ACCOUNT_ID_DEBIT\", \"type\": \"debit\", \"amount\": 5000 },\n    { \"account\": \"ACCOUNT_ID_CREDIT\", \"type\": \"credit\", \"amount\": 5000 }\n  ]\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/schools/accounting/journal-entries",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "accounting", "journal-entries"]
+                    }
+                  }
+                },
+                {
+                  "name": "Approve Journal Entry",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/accounting/journal-entries/{{journalId}}/approve",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "accounting", "journal-entries", "{{journalId}}", "approve"]
+                    }
+                  }
+                },
+                {
+                  "name": "Get Ledger",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/accounting/ledger?accountId={{accountId}}&from=2025-04-01&to=2025-04-30",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "accounting", "ledger"],
+                      "query": [
+                        {
+                          "key": "accountId",
+                          "value": "{{accountId}}"
+                        },
+                        {
+                          "key": "from",
+                          "value": "2025-04-01"
+                        },
+                        {
+                          "key": "to",
+                          "value": "2025-04-30"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Budgets",
+              "item": [
+                {
+                  "name": "Create Budget",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"name\": \"FY2025 Budget\",\n  \"periodStart\": \"2025-04-01\",\n  \"periodEnd\": \"2026-03-31\",\n  \"lines\": [\n    { \"category\": \"fees\", \"amountPlanned\": 5000000 },\n    { \"category\": \"salaries\", \"amountPlanned\": 3200000 }\n  ],\n  \"notes\": \"Initial planning\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/schools/budgets",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "budgets"]
+                    }
+                  }
+                },
+                {
+                  "name": "Get Budgets",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/budgets",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "budgets"]
+                    }
+                  }
+                },
+                {
+                  "name": "Get Budget by ID",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/budgets/{{budgetId}}",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "budgets", "{{budgetId}}"]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Vendor Invoices",
+              "item": [
+                {
+                  "name": "Create Vendor Invoice",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"vendor\": \"VENDOR_ID_HERE\",\n  \"invoiceNumber\": \"INV-2025-001\",\n  \"issueDate\": \"2025-04-05\",\n  \"dueDate\": \"2025-04-20\",\n  \"items\": [\n    { \"description\": \"Sports Equipment\", \"quantity\": 10, \"unitPrice\": 1000, \"total\": 10000 }\n  ],\n  \"taxes\": 1800\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/schools/vendor-invoices",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "vendor-invoices"]
+                    }
+                  }
+                },
+                {
+                  "name": "Get Vendor Invoices",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/vendor-invoices?status=pending",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "vendor-invoices"],
+                      "query": [
+                        {
+                          "key": "status",
+                          "value": "pending"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Record Vendor Invoice Payment",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"amount\": 5000,\n  \"method\": \"bank\",\n  \"reference\": \"PAY-2025-001\",\n  \"paidOn\": \"2025-04-12\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/schools/vendor-invoices/{{vendorInvoiceId}}/payments",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "vendor-invoices", "{{vendorInvoiceId}}", "payments"]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Fee Structures",
+              "item": [
+                {
+                  "name": "Get Fee Structures",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/fee-structures",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "fee-structures"]
+                    }
+                  }
+                },
+                {
+                  "name": "Create Fee Structure",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"classId\": \"CLASS_ID_HERE\",\n  \"academicYear\": \"2024-2025\",\n  \"components\": [\n    {\n      \"name\": \"Tuition Fee\",\n      \"amount\": 5000,\n      \"frequency\": \"monthly\"\n    }\n  ],\n  \"lateFeeRate\": 10,\n  \"dueDayOfMonth\": 10\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/schools/fee-structures",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "fee-structures"]
+                    }
+                  }
+                },
+                {
+                  "name": "Generate Monthly Invoices",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"month\": \"2024-10\",\n  \"classId\": \"OPTIONAL_CLASS_ID\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/schools/fee-structures/generate-invoices",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "fee-structures", "generate-invoices"]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Cash Book",
+              "item": [
+                {
+                  "name": "Get Cash Book Entries",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/cash-book?date=2024-10-15",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "cash-book"],
+                      "query": [
+                        {
+                          "key": "date",
+                          "value": "2024-10-15"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Create Cash Book Entry",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"type\": \"cash_in\",\n  \"amount\": 10000,\n  \"description\": \"Fee collection\",\n  \"category\": \"fee_payment\",\n  \"method\": \"cash\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/schools/cash-book",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "cash-book"]
+                    }
+                  }
+                },
+                {
+                  "name": "Get Daily Cash Summary",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/cash-book/daily-summary?date=2024-10-15",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "cash-book", "daily-summary"],
+                      "query": [
+                        {
+                          "key": "date",
+                          "value": "2024-10-15"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Ledger",
+              "item": [
+                {
+                  "name": "Get Ledger Entries",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/ledger?entityType=student&entityId={{studentId}}",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "ledger"],
+                      "query": [
+                        {
+                          "key": "entityType",
+                          "value": "student"
+                        },
+                        {
+                          "key": "entityId",
+                          "value": "{{studentId}}"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Get Student Ledger",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/ledger/student/{{studentId}}",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "ledger", "student", "{{studentId}}"]
+                    }
+                  }
+                },
+                {
+                  "name": "Get Vendor Ledger",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/ledger/vendor/{{vendorId}}",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "ledger", "vendor", "{{vendorId}}"]
+                    }
+                  }
+                },
+                {
+                  "name": "Get Account Balances",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/ledger/balances",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "ledger", "balances"]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Trial Balance",
+              "item": [
+                {
+                  "name": "Get Trial Balance",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/trial-balance?from=2024-04-01&to=2024-10-31",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "trial-balance"],
+                      "query": [
+                        {
+                          "key": "from",
+                          "value": "2024-04-01"
+                        },
+                        {
+                          "key": "to",
+                          "value": "2024-10-31"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Generate Trial Balance",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"startDate\": \"2024-04-01\",\n  \"endDate\": \"2024-10-31\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/schools/trial-balance/generate",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "trial-balance", "generate"]
+                    }
+                  }
+                },
+                {
+                  "name": "Get Balance Sheet",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/trial-balance/balance-sheet?date=2024-10-31",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "trial-balance", "balance-sheet"],
+                      "query": [
+                        {
+                          "key": "date",
+                          "value": "2024-10-31"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Finance Reports",
+              "item": [
+                {
+                  "name": "Daily Cash Summary",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/finance-reports/daily-cash?date=2024-10-15",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "finance-reports", "daily-cash"],
+                      "query": [
+                        {
+                          "key": "date",
+                          "value": "2024-10-15"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Monthly Revenue",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/finance-reports/monthly-revenue?month=2024-10",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "finance-reports", "monthly-revenue"],
+                      "query": [
+                        {
+                          "key": "month",
+                          "value": "2024-10"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Expenses Report",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/finance-reports/expenses?from=2024-10-01&to=2024-10-31",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "finance-reports", "expenses"],
+                      "query": [
+                        {
+                          "key": "from",
+                          "value": "2024-10-01"
+                        },
+                        {
+                          "key": "to",
+                          "value": "2024-10-31"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Pending Dues",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/finance-reports/pending-dues",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "finance-reports", "pending-dues"]
+                    }
+                  }
+                },
+                {
+                  "name": "Vendor Payables",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/finance-reports/vendor-payables",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "finance-reports", "vendor-payables"]
+                    }
+                  }
+                },
+                {
+                  "name": "Profit & Loss",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/finance-reports/profit-loss?from=2024-04-01&to=2024-10-31",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "finance-reports", "profit-loss"],
+                      "query": [
+                        {
+                          "key": "from",
+                          "value": "2024-04-01"
+                        },
+                        {
+                          "key": "to",
+                          "value": "2024-10-31"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "name": "Cash Flow",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Authorization",
+                        "value": "Bearer {{token}}"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{base_url}}/schools/finance-reports/cash-flow?from=2024-04-01&to=2024-10-31",
+                      "host": ["{{base_url}}"],
+                      "path": ["schools", "finance-reports", "cash-flow"],
+                      "query": [
+                        {
+                          "key": "from",
+                          "value": "2024-04-01"
+                        },
+                        {
+                          "key": "to",
+                          "value": "2024-10-31"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
